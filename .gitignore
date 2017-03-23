@@ -1,0 +1,25 @@
+syntax: glob
+TAGS
+.pc
+._expandrive
+*~
+*\#
+*.flc
+*.orig
+*.rej
+*.suo
+*.cache
+bin
+Debug
+nant
+obj
+Thumbs.db
+*-listing.txt
+*.ncb
+*.user
+*.idc
+*.bak
+*.opensdf
+*.sdf
+*.svn
+*.idea
