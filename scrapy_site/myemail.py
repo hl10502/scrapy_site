@@ -78,7 +78,7 @@ def getMsgByEmail(email):
 
     # 读取文件中的内容
     for spider_name in spider_names:
-        filename = curpath + '/scrapy_site/msg/' + spider_name + ".txt"
+        filename = curpath + '/scrapy_site/msg/' + spider_name
         loginfo = "获取文件：" + filename
         print loginfo
         _log.info(loginfo)
