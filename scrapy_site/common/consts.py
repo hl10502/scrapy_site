@@ -15,8 +15,11 @@ const.EMAIL_CONF = 'email.conf'
 
 # 第三方 SMTP 服务
 const.MAIL_HOST = "smtp.126.com"  # 设置服务器
-const.SENDER = 'zhujt1990@126.com'
-const.MAIL_USER = "zhujt1990"  # 用户名
-const.MAIL_PASS = "zhujiantao"  # 口令
+# 发送者Email地址
+const.SENDER = 'xxx@126.com'
+# 发送者Email用户名
+const.MAIL_USER = "xxx"  # 用户名
+# 发送者Email密码
+const.MAIL_PASS = "yyy"  # 口令
 
 
