@@ -10,6 +10,8 @@ from scrapy_site.utils import const
 const.ENCODE = 'UTF-8'
 #检索关键字配置文件
 const.KEYWORD_CONF = 'keyword.conf'
+#网站名称关键字
+const.WEBNAME_CONF = 'webname.conf'
 #email收件人配置文件
 const.EMAIL_CONF = 'email.conf'
 
@@ -21,5 +23,3 @@ const.SENDER = 'xxx@126.com'
 const.MAIL_USER = "xxx"  # 用户名
 # 发送者Email密码
 const.MAIL_PASS = "yyy"  # 口令
-
-

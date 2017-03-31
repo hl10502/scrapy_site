@@ -35,6 +35,10 @@ class SavePipeline(object):
         self.keywordsDict = dict()
         self.getKeywords()
 
+        #从配置文件中读取网站名称
+        self.webnamesDict = dict()
+        self.getWebnames()
+
         # 爬取信息
         self.msgDict = dict()
 
@@ -49,13 +53,13 @@ class SavePipeline(object):
     def spider_opended(self, spider):
         file = open(self.spidername_filepath + spider.name, 'w')
         file.write('---')
-        file.write("招标网站爬虫:" + spider.name)
+        file.write("网站名称:" + self.webnamesDict[spider.name])
         file.write('---')
         file.write('\n')
         file.close()
 
     def spider_closed(self, spider):
-        file = open(self.spidername_filepath + spider.name, 'w')
+        file = open(self.spidername_filepath + spider.name, 'a')
         #将爬取信息写入爬虫文件中
         if self.msgDict :
             msg = self.msgDict.get(spider.name)
@@ -83,15 +87,19 @@ class SavePipeline(object):
                 msgArr = {}
                 msgArr['id'] = 0
                 msgArr['msg'] = ""
-            msgArr['id'] += 1
-            msgArr['msg'] += str(msgArr['id'])
-            msgArr['msg'] += '---'
-            msgArr['msg'] += item['title'].encode(const.ENCODE)
-            msgArr['msg'] += '---'
-            msgArr['msg'] += item['link'].encode(const.ENCODE)
-            msgArr['msg'] += '\n'
+            #根据链接判断是否爬取到重复内容
+            if item['link'].encode(const.ENCODE) in msgArr['msg']:
+                pass
+            else:
+                msgArr['id'] += 1
+                msgArr['msg'] += str(msgArr['id'])
+                msgArr['msg'] += '---'
+                msgArr['msg'] += item['title'].encode(const.ENCODE)
+                msgArr['msg'] += '---'
+                msgArr['msg'] += item['link'].encode(const.ENCODE)
+                msgArr['msg'] += '\n'
 
-            print("msgArr['msg']=" + msgArr['msg'])
+            # print("==================添加内容====================msgArr['msg']={}".format(msgArr['msg']))
             self.msgDict.setdefault(spider.name, msgArr)
 
         return item
@@ -115,3 +123,15 @@ class SavePipeline(object):
             else:
                 break
         fk.close()
+
+    def getWebnames(self):
+        # 从配置文件中读取关键字
+        fw = open(self.curpath + "/scrapy_site/" + const.WEBNAME_CONF, 'r')
+        while True:
+            line = fw.readline().strip()
+            if line:
+                config = line.split('===')
+                self.webnamesDict.setdefault(config[0], config[1])
+            else:
+                break
+        fw.close()

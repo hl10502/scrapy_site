@@ -58,7 +58,7 @@ def getMsgByEmail(email):
     fc = open(filename, 'r')
 
     loginfo = "获取文件：" + filename
-    print loginfo
+    # print loginfo
     _log.info(loginfo)
 
     while True:
@@ -104,7 +104,6 @@ def getMsgByEmail(email):
 
 def sendMail(receiver, creceiver):
     receivers = (receiver + ',' + creceiver).split(',')
-
     loginfo = "收件人：" + receiver + ",Cc：" +  creceiver
     print loginfo
     _log.info(loginfo)
@@ -122,23 +121,35 @@ def sendMail(receiver, creceiver):
         message.add_header('Cc', const.SENDER)
 
     # 邮箱主题
-    subject = '招标网站最新信息' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    subject = time.strftime('%Y-%m-%d', time.localtime(time.time())) + '招标网站最新信息'
     message['Subject'] = Header(subject, 'utf-8')
+    send_result = {}
+    send_count = 5
+    for send_time in range(0, send_count):
+        try:
+            smtpObj = smtplib.SMTP()
+            smtpObj.connect(const.MAIL_HOST, 25)  # 25 为 SMTP 端口号
+            smtpObj.login(const.MAIL_USER, const.MAIL_PASS)
+            if isHasHref:
+                print '有内容发送给客户'
+                _log.info('------有内容发送给客户-----')
+                send_result = smtpObj.sendmail(const.SENDER, receivers, message.as_string())
+            else:
+                print '无内容发送给自己'
+                _log.info('------无内容发送给自己-----')
+                send_result = smtpObj.sendmail(const.SENDER, const.SENDER, message.as_string())
+            print "邮件发送成功"
+            _log.info('-----------第{}次发送结果{}----------------'.format(send_time, send_result))
+            break
+        except smtplib.SMTPException, e:
+            _log.error('无法发送邮件:' + str(e))
+            print e
+            print "Error: 无法发送邮件"
 
-    try:
-        smtpObj = smtplib.SMTP()
-        smtpObj.connect(const.MAIL_HOST, 25)  # 25 为 SMTP 端口号
-        smtpObj.login(const.MAIL_USER, const.MAIL_PASS)
-        if isHasHref:
-            print '有内容发送给客户'
-            _log.info('------有内容发送给客户-----')
-            smtpObj.sendmail(const.SENDER, receivers, message.as_string())  # 发送邮箱、接收邮箱、邮件内容
-        else:
-            print '无内容发送给自己'
-            _log.info('------无内容发送给自己-----')
-            smtpObj.sendmail(const.SENDER, const.SENDER, message.as_string())  # 发送邮箱、接收邮箱、邮件内容
-        print "邮件发送成功"
-    except smtplib.SMTPException, e:
-        _log.error('无法发送邮件:' + str(e))
-        print e
-        print "Error: 无法发送邮件"
+
+#email.conf配额制文件内容如下：
+#b2b10086,bidding,chinaunicombidding===xxx@xx.com,xxx1@xx.com===yyy@yy.com,yyy1@yy.cm
+#b2b10086,bidding,chinaunicombidding===xxx@xx2.com,xxx12@xx.com===yyy2@yy.com,yyy12@yy.cm
+#以===为间隔本别为需爬网站，邮件接收人，邮件抄送人
+#在发送邮件是，sendMail(receiver, creceiver)能够根据receiver邮件接收人读取对应网站文件内容为一个字符串，将该字符串作为邮件内容
+#在run.py中读取email.comf读取每行根据收件人生成邮件内容

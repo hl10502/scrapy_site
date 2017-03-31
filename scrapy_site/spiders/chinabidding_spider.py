@@ -21,6 +21,7 @@ class ChinabiddingSpider(scrapy.Spider):
 
     def parse(self, response):
         pubtime = ""
+        nextPagehref = None
         detail = response.xpath('//table[@id="list"]/tbody/tr[@class="yj_nei"]')
         for temp in detail:
             item = SiteItem()
@@ -35,11 +36,11 @@ class ChinabiddingSpider(scrapy.Spider):
             nextPagehref = "https://www.chinabidding.cn" + response.xpath(
                     u'//span[@class="Disabled"]/a[text()="下一页>>"]/@href').extract_first()
             # /zbxx/zbgg/249.html
-            print ('------------------------------------------------------------%s' % nextPagehref)
+            # print ('------------------------------------------------------------%s' % nextPagehref)
         # nextPageNum = int(re.findall(r"\d+", nextPagehref)[0])
         # and nextPageNum < (int(self.pagenum['pagenum']) + 50)
-        nextPageNum = int(re.findall(r"\d+", nextPagehref)[0])
-        print('下一页===================================%s' % nextPageNum)
+        # nextPageNum = int(re.findall(r"\d+", nextPagehref)[0])
+        # print('下一页===================================%s' % nextPageNum)
         if pubtime == date.get_curdate():
             if nextPagehref:
                 yield scrapy.Request(nextPagehref, callback=self.parse)

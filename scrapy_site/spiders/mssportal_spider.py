@@ -14,7 +14,7 @@ class MssPortalSpider(scrapy.Spider):
     #allowed_domains = ["42.99.33.26/MSS-PORTAL/"]
     start_urls = [
         "https://42.99.33.26/MSS-PORTAL/announcementjoin/list.do?provinceJT=JT",
-        #"https://42.99.33.26/MSS-PORTAL/announcementjoin/list.do?provinceJT=NJT"
+        "https://42.99.33.26/MSS-PORTAL/announcementjoin/list.do?provinceJT=NJT"
     ]
 
     currentPage = 0
